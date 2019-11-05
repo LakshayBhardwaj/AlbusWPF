@@ -1,0 +1,313 @@
+﻿<Window x:Class="WpfAlbus.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfAlbus"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="700" Width="1200" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+
+        <!-- Photo Template -->
+        <DataTemplate DataType="{x:Type local:Photo}">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="6">
+                <!-- Drop Shadow -->
+                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="4"
+                        Background="#44000000">
+                    <Border.RenderTransform>
+                        <TranslateTransform X="5" Y="5" />
+                    </Border.RenderTransform>
+                    <Border.BitmapEffect>
+                        <BlurBitmapEffect Radius="8" />
+                    </Border.BitmapEffect>
+                </Border>
+                <!-- Image Template -->
+                <Border Padding="4" Background="White" BorderBrush="#22000000" BorderThickness="1">
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="{Binding Image}" ToolTip="{Binding Image_Name}"  />
+                        <Label Content="{Binding Image_Name}" >
+                            <Label.ToolTip>
+                                Only JPeg images with a stored thumbnail will display a thumbnail during preview.
+                            </Label.ToolTip>
+                        </Label>
+                        <!--<Label>
+                            <StackPanel Orientation="Horizontal">
+                                <Path x:Name="greenTick"
+                                Width="11" Height="11" 
+
+                                SnapsToDevicePixels="False" 
+                                Stroke="Green"
+                                StrokeThickness="2"
+                                Data="M 2,4 C 2,4 3,5 5,13 C 5,13 5,3 12,0" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding Image_Name}"></TextBlock>
+                            </StackPanel>
+                        </Label>-->
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+
+        <!-- Main photo catalog view -->
+        <Style TargetType="{x:Type ListBox}" x:Key="PhotoListBoxStyle">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBox}">
+                        <WrapPanel Margin="5" IsItemsHost="True" Orientation="Horizontal"
+                                   ItemHeight="{Binding ElementName=ZoomSlider, Path='Value'}"
+                                   ItemWidth="{Binding ElementName=ZoomSlider, Path='Value'}"
+                                   VerticalAlignment="Top" HorizontalAlignment="Stretch" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for an individual generic item -->
+        <Style TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border SnapsToDevicePixels="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#445B6249" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Removes dotted rectangle focus -->
+        <Style TargetType="{x:Type ItemsControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ItemsControl}">
+                        <WrapPanel IsItemsHost="True" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- For metadata properties pane -->
+        <Style TargetType="{x:Type GroupBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GroupBox}">
+                        <Grid>
+                            <Border Background="#AAFFFFFF" CornerRadius="4" BorderBrush="#66000000" BorderThickness="1">
+                                <Border CornerRadius="4" BorderBrush="#88FFFFFF" BorderThickness="1"
+                                        ClipToBounds="true">
+                                    <Border CornerRadius="6" BorderThickness="2" BorderBrush="#ABB497">
+                                        <Border.BitmapEffect>
+                                            <BlurBitmapEffect Radius="6" />
+                                        </Border.BitmapEffect>
+                                        <Border CornerRadius="6" BorderThickness="2" BorderBrush="#DEF2AD">
+                                            <Border.BitmapEffect>
+                                                <BlurBitmapEffect Radius="6" />
+                                            </Border.BitmapEffect>
+                                        </Border>
+                                    </Border>
+                                </Border>
+                            </Border>
+                            <ContentPresenter Margin="6" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="Metacreatebutton" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="LavenderBlush" />
+            <Setter Property="Foreground" Value="Green" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Width" Value="{Binding ActualWidth, ElementName=ButtonList}" />
+        </Style>
+        <Style x:Key="MetadataExpander" TargetType="{x:Type Expander}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="0.5" Color="{x:Static SystemColors.AppWorkspaceColor}" />
+                            <GradientStop Offset="2" Color="Transparent" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+
+        <!-- Default label style -->
+        <Style TargetType="{x:Type Label}">
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="11" />
+        </Style>
+
+        <Style x:Key="MetadataButton" TargetType="{x:Type Button}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="0.5" Color="{x:Static SystemColors.AppWorkspaceColor}" />
+                            <GradientStop Offset="2" Color="Transparent" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+        <!-- Headers for metadata properties -->
+        <Style x:Key="MetadataHeader" TargetType="{x:Type Label}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="0.5" Color="{x:Static SystemColors.AppWorkspaceColor}" />
+                            <GradientStop Offset="2" Color="Transparent" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+
+        <!-- Data converters for complex fields -->
+
+    </Window.Resources>
+    <Grid  DataContext="{Binding Source={StaticResource Photos}}"
+          Margin="10">
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="250" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <GroupBox Grid.Column="0" Grid.Row="1">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ListBox
+                    IsSynchronizedWithCurrentItem="True"
+                    Name="PhotosListBox"
+                    Style="{StaticResource PhotoListBoxStyle}"
+                    Margin="5"
+                    SelectionMode="Extended"
+                    ItemsSource="{Binding}"
+                    SelectedIndex="0"
+                   >
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Image Height="35"></Image>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Delete" Click="Delete_Image" />
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
+                
+            </ScrollViewer>
+        </GroupBox>
+
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="15"
+                      Background="Transparent" ShowsPreview="True" />
+
+
+        <DockPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                   Margin="15,0,0,0">
+            <DockPanel DockPanel.Dock="Bottom" Margin="5">
+                <Label DockPanel.Dock="Left">Zoom:</Label>
+                <Slider Name="ZoomSlider"
+                        Margin="10,0,0,0"
+                        Orientation="Horizontal"
+                        Minimum="80"
+                        Maximum="320"
+                        Value="160"
+                        TickFrequency="80"
+                        TickPlacement="BottomRight"
+                        SmallChange="5"
+                        LargeChange="20" />
+            </DockPanel>
+
+            <GroupBox Width="250">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel x:Name="ButtonList">
+                        <DockPanel HorizontalAlignment="Right">
+                            <Button x:Name="UserName" HorizontalAlignment="Left"  Style="{StaticResource MetadataButton}" ></Button>
+                            <Button DockPanel.Dock="Right" Width="72" Click="Sign_Out">Sign Out</Button>
+                        </DockPanel>
+
+                        <Label Content="{Binding Path=Source}" x:Name="labeler" />
+                        <Grid  Margin="20" Height="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="115*"/>
+                                <ColumnDefinition Width="83*"/>
+                            </Grid.ColumnDefinitions>
+                            <ProgressBar x:Name="progress" Minimum="0" Maximum="100" Grid.ColumnSpan="2" />
+                            <Button x:Name="stopButton" Background="Transparent" Margin="-2,22,2,-22" IsEnabled="True" Click="StopButton_Click" Grid.ColumnSpan="2">Stop</Button>
+                        </Grid>
+                        <Button x:Name="createAlbum" Margin="20 5" Height="20" Click="Create_Album">Create Album</Button>
+
+
+                        <!--<Expander Name="ExpanderControl" Background="LavenderBlush"   
+          HorizontalAlignment="Left" Header="Click to Expand"   
+          ExpandDirection="Down" IsExpanded="False" Width="200"  
+                  FontSize="20" FontWeight="Bold" Foreground="Green">
+                            <TextBlock TextWrapping="Wrap" >  
+                This is an Expander control. Within this control, all contents will be wrapped.  
+                At run-time, you may expand or collapse this control. Type more text here to be typed.  
+                Jump around and hype.
+                            </TextBlock>
+                        </Expander>
+                        <Label Style="{StaticResource MetadataHeader}">Size:</Label>
+
+                        <Label Style="{StaticResource MetadataHeader}">Date Image Taken:</Label>
+                        <Label Content="{Binding Path=Metadata.DateImageTaken}" />
+                        <Label Style="{StaticResource MetadataHeader}">Camera Model:</Label>
+                        <Label Content="{Binding Path=Metadata.CameraModel}" />
+                        <Label Style="{StaticResource MetadataHeader}">Creation Software:</Label>
+                        <Label Content="{Binding Path=Metadata.CreationSoftware}" />
+                        <Label Style="{StaticResource MetadataHeader}">Lens Aperture:</Label>
+
+                        <Label Style="{StaticResource MetadataHeader}">Focal Length:</Label>
+
+                        <Label Style="{StaticResource MetadataHeader}">ISO Speed:</Label>
+                        <Label Content="{Binding Path=Metadata.IsoSpeed}" />
+                        <Label Style="{StaticResource MetadataHeader}">Exposure Time:</Label>
+
+                        <Label Style="{StaticResource MetadataHeader}">Exposure Mode:</Label>
+
+                        <Label Style="{StaticResource MetadataHeader}">Exposure Compensation:</Label>
+                        <Label Content="{Binding Path=Metadata.ExposureCompensation}" />
+                        <Label Style="{StaticResource MetadataHeader}">White Balance Mode:</Label>
+                        <Label Content="{Binding Path=Metadata.WhiteBalanceMode}" />
+                        <Label Style="{StaticResource MetadataHeader}">Color Representation:</Label>
+                        <Label Content="{Binding Path=Metadata.ColorRepresentation}" />-->
+                    </StackPanel>
+                </ScrollViewer>
+            </GroupBox>
+        </DockPanel>
+    </Grid>
+</Window>
