@@ -62,7 +62,7 @@ namespace WpfAlbus
 
                 // Add(new Photo("https://albus.blob.core.windows.net/samplecontainer/detection6.jpg"));
 
-                CloudStorageAccount storageAccount = CreateStorageAccountFromConnectionString("DefaultEndpointsProtocol=https;AccountName=albus;AccountKey=V6tfipu99EwHGMhaxSiYNAE3m1FE43jSKHtNpbr3Z76Pf7nsbRFfJOsleI2Po3UWObTX/7c9R6h5JYS1EfqlGQ==;EndpointSuffix=core.windows.net");
+                CloudStorageAccount storageAccount = CreateStorageAccountFromConnectionString("");
 
                 // Create a blob client for interacting with the blob service.
                 CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
