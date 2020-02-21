@@ -40,8 +40,8 @@ namespace WpfAlbus
         {
             string connstring = String.Format("Server={0};Port={1};" +
                             "User Id={2};Password={3};Database={4};",
-                            "localhost", 5432, "postgres",
-                            "thinksys@123", "albuswpf");
+                            "localhost", 5432, "",
+                            "", "");
             // Making connection with Npgsql provider
             NpgsqlConnection conn = new NpgsqlConnection(connstring);
             conn.Open();
