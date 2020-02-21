@@ -89,20 +89,15 @@ namespace WpfAlbus
                 {  
                     errormessage.Text = "";  
                     string address = textBoxAddress.Text;  
-                    //SqlConnection con = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=WpfAlbus;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");  
-                    //con.Open();  
-                    //SqlCommand cmd = new SqlCommand("Insert into Registration (FirstName,LastName,Email,Password,Address) values('" + firstname + "','" + lastname + "','" + email + "','" + password + "','" + address + "')", con);  
-                    //cmd.CommandType = CommandType.Text;  
-                    //cmd.ExecuteNonQuery();  
-                    //con.Close();
+                    
 
                     try
                     {
                         // PostgeSQL-style connection string
                         string connstring = String.Format("Server={0};Port={1};" +
                             "User Id={2};Password={3};Database={4};",
-                            "localhost", 5432, "postgres",
-                            "thinksys@123", "albuswpf");
+                            "localhost", 5432, "",
+                            "", "");
                         // Making connection with Npgsql provider
                         NpgsqlConnection conn = new NpgsqlConnection(connstring);
                         conn.Open();
