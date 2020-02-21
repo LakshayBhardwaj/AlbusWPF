@@ -49,13 +49,13 @@ namespace WpfAlbus
         string myunique_id;
         string connstring = String.Format("Server={0};Port={1};" +
                             "User Id={2};Password={3};Database={4};",
-                            "localhost", 5432, "postgres",
-                            "thinksys@123", "albuswpf");
+                            "localhost", 5432, "",
+                            "", "");
         // Create a blob client for interacting with the blob service.
 
         public MainWindow()
         {
-            userId = "lakshy";
+            userId = "";
             myunique_id = "xxxx";
            
             InitializeComponent();
@@ -64,8 +64,8 @@ namespace WpfAlbus
 
             string connstring = String.Format("Server={0};Port={1};" +
                             "User Id={2};Password={3};Database={4};",
-                            "localhost", 5432, "postgres",
-                            "thinksys@123", "albuswpf");
+                            "localhost", 5432, "",
+                            "", "");
             // Making connection with Npgsql provider
             NpgsqlConnection conn = new NpgsqlConnection(connstring);
             conn.Open();
@@ -110,8 +110,8 @@ namespace WpfAlbus
 
             string connstring = String.Format("Server={0};Port={1};" +
                             "User Id={2};Password={3};Database={4};",
-                            "localhost", 5432, "postgres",
-                            "thinksys@123", "albuswpf");
+                            "localhost", 5432, "",
+                            "", "");
             // Making connection with Npgsql provider
             NpgsqlConnection conn = new NpgsqlConnection(connstring);
             conn.Open();
@@ -185,8 +185,8 @@ namespace WpfAlbus
         {
             string connstring = String.Format("Server={0};Port={1};" +
                             "User Id={2};Password={3};Database={4};",
-                            "localhost", 5432, "postgres",
-                            "thinksys@123", "albuswpf");
+                            "localhost", 5432, "",
+                            "", "");
             // Making connection with Npgsql provider
             NpgsqlConnection conn = new NpgsqlConnection(connstring);
             conn.Open();
