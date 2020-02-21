@@ -122,14 +122,7 @@ namespace WpfAlbus
             {
                 string email = textBoxEmail.Text;
                 string password = passwordBox1.Password;
-                //SqlConnection con = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=WpfAlbus;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-                //con.Open();
-                //SqlCommand cmd = new SqlCommand("Select * from Registration where Email='" + email + "'  and password='" + password + "'", con);
-                //cmd.CommandType = CommandType.Text;
-                //SqlDataAdapter adapter = new SqlDataAdapter();
-                //adapter.SelectCommand = cmd;
-                //DataSet dataSet = new DataSet();
-                //adapter.Fill(dataSet);
+               
 
                
                 // Making connection with Npgsql provider
